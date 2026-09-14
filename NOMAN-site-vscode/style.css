@@ -1,0 +1,1686 @@
+/* ==========================================================================
+   ==========================================================================
+   NOMAN — COMUNICAÇÃO, ESTRATÉGIA E MARKETING
+   Arquivo Principal de Estilos (style.css)
+   
+   ÍNDICE DE SEÇÕES:
+   01. DESIGN SYSTEM & VARIÁVEIS (:root)
+   02. RESET & CONFIGURAÇÕES BASE (html, body, tipografia)
+   03. COMPONENTES GERAIS & CLASSES UTILITÁRIAS (.section, .reveal)
+   04. CABEÇALHO / NAVEGAÇÃO (.site-header)
+   05. BOTÕES & LINKS DE AÇÃO (.button, .text-link, .eyebrow)
+   06. HERO / SEÇÃO INICIAL (#inicio, fundo verde largura total)
+   07. FAIXA LETREIRO ANIMADA (.brand-marquee)
+   08. SEÇÃO SOBRE A NOMAN (#sobre, .about)
+   09. SEÇÃO SERVIÇOS (#servicos, .services)
+   10. SEÇÃO MANIFESTO / VISÃO (.statement)
+   11. SEÇÃO PROCESSO (#processo, .process, .timeline)
+   12. SEÇÃO VITRINE CONCEITUAL (.showcase)
+   13. SEÇÃO DIFERENCIAIS (#why, .why)
+   14. SEÇÃO CHAMADA PARA AÇÃO (.cta)
+   15. SEÇÃO CONTATO & FORMULÁRIO (#contato, .contact)
+   16. RODAPÉ INSTITUCIONAL (footer)
+   17. ANIMAÇÕES & EFEITOS CHAVE (@keyframes)
+   18. RESPONSIVIDADE & MEDIA QUERIES (Tablets, Celulares e Acessibilidade)
+   ==========================================================================
+   ========================================================================== */
+
+
+/* ==========================================================================
+   ==========================================================================
+   01. DESIGN SYSTEM & VARIÁVEIS (:root)
+   Centraliza a paleta de cores oficial e medidas padrão usadas em todo o site.
+   Qualquer alteração aqui reflete automaticamente em todas as páginas.
+   ==========================================================================
+   ========================================================================== */
+
+:root {
+  /* Tons de Verde (Identidade Institucional da NOMAN) */
+  --verde: #203328;          /* Verde escuro principal (usado no fundo do hero e botões) */
+  --profundo: #16241c;       /* Verde ultra escuro / quase preto (usado no cabeçalho e rodapé) */
+  --salvia: #8eb898;         /* Verde sálvia claro (usado em detalhes, ícones e linhas) */
+  --salvia-esc: #5a8a68;     /* Verde sálvia intermediário (usado em legendas e bordas de foco) */
+
+  /* Tons de Rosa (Contraste e Destaque Criativo) */
+  --rosa: #efaebf;           /* Rosa suave institucional (usado em itálicos, botões de ação e marquee) */
+  --rosa-esc: #cf6882;       /* Rosa mais encorpado para texto com boa legibilidade */
+
+  /* Tons Neutros de Fundo e Superfície */
+  --areia: #f8f5ee;          /* Tom de areia quente claro (fundo padrão da página) */
+  --claro: #fcfbf8;          /* Tom quase branco para contraste de cards e formulário */
+  --borda: #e5ded2;          /* Linha divisória neutra e discreta entre blocos */
+
+  /* Tipografia e Textos */
+  --texto: #192720;          /* Cor principal para leitura de textos corridos e títulos */
+  --suave: #53675c;          /* Cor secundária para parágrafos explicativos e legendas */
+
+  /* Dimensões Globais */
+  --max: 1360px;             /* Largura máxima do conteúdo em telas grandes / monitores ultrawide */
+}
+
+
+/* ==========================================================================
+   ==========================================================================
+   02. RESET & CONFIGURAÇÕES BASE
+   Padroniza o comportamento dos navegadores e define a tipografia padrão.
+   ==========================================================================
+   ========================================================================== */
+
+/* box-sizing: border-box faz com que espaçamentos internos (padding) e bordas
+   não aumentem o tamanho total definido para os elementos, evitando quebras de layout. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Rolagem suave ao navegar por links âncora (#inicio, #sobre, etc.) */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Configurações gerais do corpo da página */
+body {
+  margin: 0;
+  background: var(--areia);
+  color: var(--texto);
+  font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Links herdam a cor do texto onde estão inseridos e não têm sublinhado padrão */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Imagens responsivas que nunca ultrapassam o limite do elemento pai */
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* Destaque manuscrito/editorial com a fonte clássica Instrument Serif */
+em {
+  display: inline-block;
+  color: var(--rosa);
+  font-family: "Instrument Serif", serif;
+  font-size: 1.08em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: .88;
+}
+
+/* Hierarquia e ritmo vertical padrão dos títulos */
+h1, h2, h3, p {
+  margin-top: 0;
+}
+
+h1, h2 {
+  line-height: 1.04;
+  letter-spacing: -.055em;
+}
+
+h1 {
+  font-size: clamp(3.3rem, 6.2vw, 6.4rem);
+  max-width: 850px;
+  margin: .7rem 0 2rem;
+  font-weight: 600;
+}
+
+h2 {
+  font-size: clamp(2.8rem, 5vw, 5.2rem);
+  font-weight: 600;
+  margin: .8rem 0 2rem;
+}
+
+
+/* ==========================================================================
+   ==========================================================================
+   03. COMPONENTES GERAIS & CLASSES UTILITÁRIAS
+   Classes reutilizáveis para estruturação de blocos e animações de scroll.
+   ==========================================================================
+   ========================================================================== */
+
+/* .section: aplica o espaçamento padrão vertical e limita a largura ao centro */
+.section {
+  max-width: var(--max);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 9rem 3rem;
+}
+
+/* .reveal: elementos que iniciam invisíveis e deslizam para cima ao rolar a página.
+   A classe .visible é adicionada dinamicamente pelo script.js via IntersectionObserver. */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+
+/* ==========================================================================
+   ==========================================================================
+   04. CABEÇALHO / NAVEGAÇÃO (.site-header)
+   Barra fixa flutuante em formato de cápsula com efeito de vidro fosco (glassmorphism).
+   ==========================================================================
+   ========================================================================== */
+
+.site-header {
+  position: fixed;
+  z-index: 20;
+  top: 16px;
+  right: max(1.25rem, calc((100vw - var(--max)) / 2 + 1.5rem));
+  left: max(1.25rem, calc((100vw - var(--max)) / 2 + 1.5rem));
+  width: auto;
+  height: 68px;
+  padding: 0 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+  background: rgba(22, 36, 28, .9);
+  border: 1px solid rgba(255, 255, 255, .13);
+  border-radius: 999px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: height .35s ease, background .35s ease, border-color .35s ease;
+}
+
+/* Estilo compacto quando o usuário rola mais de 24px na tela */
+.site-header.scrolled {
+  height: 62px;
+  background: rgba(22, 36, 28, .98);
+  border-color: rgba(255, 255, 255, .13);
+}
+
+/* Logotipo no topo */
+.logo-link img {
+  width: 140px;
+}
+
+/* Lista de links de navegação */
+.site-header nav {
+  display: flex;
+  gap: 1.7rem;
+  font-size: .82rem;
+  font-weight: 500;
+}
+
+/* Linha animada ao passar o mouse sobre cada item do menu */
+.site-header nav a {
+  position: relative;
+}
+
+.site-header nav a:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0;
+  height: 2px;
+  background: var(--rosa);
+  transition: width .25s ease;
+}
+
+.site-header nav a:hover:after {
+  width: 100%;
+}
+
+/* Botão hambúrguer exclusivo para telas pequenas / mobile */
+.menu {
+  display: none;
+  background: none;
+  border: 0;
+  color: #fff;
+  font-weight: 700;
+  font-family: inherit;
+  font-size: .9rem;
+  cursor: pointer;
+}
+
+
+/* ==========================================================================
+   ==========================================================================
+   05. BOTÕES & LINKS DE AÇÃO (.button, .text-link, .eyebrow)
+   Estilização dos elementos clicáveis e chamadas de destaque do site.
+   ==========================================================================
+   ========================================================================== */
+
+/* Botão padrão: formato cápsula moderna com transição de clique */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  background: var(--verde);
+  color: white;
+  padding: 1rem 1.4rem;
+  border: 0;
+  border-radius: 999px;
+  font: 700 .86rem 'Manrope', sans-serif;
+  letter-spacing: .02em;
+  cursor: pointer;
+  transition: background .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+
+.button:hover {
+  background: var(--profundo);
+  transform: translateY(-2px);
+}
+
+/* Ícone de seta dentro do botão */
+.button span {
+  color: var(--rosa);
+  font-size: 1.1rem;
+}
+
+/* Variação compacta para uso no cabeçalho */
+.button-small {
+  padding: .75rem 1.15rem;
+  font-size: .82rem;
+}
+
+/* Botão claro (usado em seções escuras ou no banner rosa de CTA) */
+.button.light {
+  background: var(--areia);
+  color: var(--profundo);
+}
+
+.button.light:hover {
+  background: #ffffff;
+}
+
+/* Botão específico do cabeçalho e do hero com fundo rosa e texto contrastante */
+.site-header > .button,
+.hero .button {
+  color: var(--profundo);
+  background: var(--rosa);
+  border-radius: 999px;
+}
+
+.site-header > .button:hover,
+.hero .button:hover {
+  background: #f6bccb;
+}
+
+.site-header > .button span,
+.hero .button span {
+  color: var(--profundo);
+}
+
+/* Link textual com sublinhado sutil e seta */
+.text-link {
+  font-size: .88rem;
+  font-weight: 700;
+  border-bottom: 1px solid var(--texto);
+  padding: .8rem 0;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  transition: opacity .2s ease;
+}
+
+.text-link:hover {
+  opacity: .8;
+}
+
+/* Legenda / Chapeuzinho acima dos títulos principais (eyebrow) */
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  font-size: .72rem;
+  font-weight: 800;
+  color: var(--salvia-esc);
+}
+
+/* Traço rosa decorativo antes do texto da legenda */
+.eyebrow span {
+  width: 24px;
+  height: 2px;
+  background: var(--rosa);
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+
+/* ==========================================================================
+   ==========================================================================
+   06. HERO / SEÇÃO INICIAL (#inicio)
+   Área de entrada do site com o fundo verde escuro ocupando a largura total (100%),
+   título de destaque, pilares estratégicos e composição visual interativa 3D.
+   ==========================================================================
+   ========================================================================== */
+
+/*
+  CONFIGURAÇÃO DE LARGURA TOTAL DO HERO:
+  - width: 100% e max-width: none: quebram o limite padrão da classe .section,
+    fazendo com que a cor verde escura e o gradiente cubram 100% da tela de ponta a ponta.
+  - padding-left / padding-right com calc((100vw - var(--max)) / 2 + 3rem):
+    garantem que o conteúdo interno (textos e imagem) permaneça perfeitamente alinhado
+    com a largura máxima do restante do site (--max: 1360px), enquanto o fundo se expande.
+*/
+.hero {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding-top: 10.7rem;
+  padding-bottom: 4rem;
+  padding-left: max(3rem, calc((100vw - var(--max)) / 2 + 3rem));
+  padding-right: max(3rem, calc((100vw - var(--max)) / 2 + 3rem));
+  display: grid;
+  grid-template-columns: 1.02fr .88fr;
+  gap: 5rem;
+  align-items: center;
+  background:
+    radial-gradient(circle at 16% 20%, rgba(142, 184, 152, .12), transparent 28%),
+    var(--verde);
+  color: #fff;
+  overflow: hidden;
+  isolation: isolate; /* Cria um contexto próprio para sobreposição dos efeitos visuais */
+}
+
+/* Padrão de textura pontilhada de alta sofisticação sobre o fundo verde */
+.hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: .08;
+  background-image: radial-gradient(rgba(255, 255, 255, .9) .55px, transparent .55px);
+  background-size: 6px 6px;
+  pointer-events: none;
+}
+
+/* Ajustes de cores dos elementos textuais dentro do hero escuro */
+.hero .eyebrow {
+  color: var(--salvia);
+}
+
+.hero-copy {
+  align-self: center;
+  min-width: 0;
+  container-type: inline-size;
+}
+
+.hero h1 {
+  max-width: 800px;
+  font-size: clamp(2rem, 5vw, 5rem);
+  font-size: clamp(2rem, 12cqw, 5rem);
+  font-weight: 500;
+  letter-spacing: -.065em;
+  color: #fff;
+}
+
+.hero-title-line {
+  display: block;
+}
+
+.hero h1 em {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  margin: .1em 0 .04em;
+  font-size: 1.08em;
+  white-space: normal;
+}
+
+/* Parágrafo guia / subtítulo do Hero */
+.lead {
+  font-size: 1.04rem;
+  max-width: 650px;
+  color: #d3ded6;
+}
+
+/* Linha com os dois botões de ação do Hero */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+
+.hero .text-link {
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, .55);
+}
+
+/* Os 3 Pilares da NOMAN (Estratégia, Criatividade e Comunicação) */
+.hero-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.4rem;
+  margin-top: 4.2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, .17);
+}
+
+.hero-pillars strong,
+.hero-pillars span {
+  display: block;
+}
+
+.hero-pillars strong {
+  font-size: 1.16rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.hero-pillars span {
+  margin-top: .25rem;
+  color: #aebfb3;
+  font-size: .72rem;
+  line-height: 1.45;
+}
+
+/* Coluna visual à direita: imagem conceitual, badge e cards */
+.hero-visual {
+  position: relative;
+  margin-bottom: 3rem;
+}
+
+/* Moldura que recebe a perspectiva 3D ao movimentar o cursor do mouse (via script.js) */
+.image-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4/5;
+  background: #f4efe5;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 28px;
+  box-shadow: 0 35px 80px rgba(8, 18, 12, .32);
+  transform: perspective(1100px) rotateY(var(--tilt-x, 0deg)) rotateX(var(--tilt-y, 0deg));
+  transition: transform .18s ease-out, box-shadow .4s ease;
+}
+
+/* Imagem principal com leve efeito de pulsação suave */
+.image-frame img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 27px;
+  transform: scale(1.035);
+  animation: hero-breathe 9s ease-in-out infinite alternate;
+}
+
+/* Imagem vertical próxima de um quadrado, independente da altura do título. */
+@media (min-width: 910px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    column-gap: 2.5rem;
+  }
+
+  .hero-visual {
+    align-self: start;
+    justify-self: center;
+    width: 90%;
+    height: auto;
+    aspect-ratio: 6 / 7;
+  }
+
+  .hero-visual .image-frame {
+    position: absolute;
+    inset: 0;
+    aspect-ratio: auto;
+  }
+
+}
+
+/* Badge flutuante sobre a foto (Estratégia + criatividade) */
+.visual-badge {
+  position: absolute;
+  z-index: 2;
+  top: 1.3rem;
+  left: 1.3rem;
+  padding: .55rem .85rem;
+  color: var(--profundo);
+  background: rgba(255, 255, 255, .88);
+  border: 1px solid rgba(22, 36, 28, .12);
+  border-radius: 999px;
+  font-size: .68rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.visual-badge i {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: .4rem;
+  border-radius: 50%;
+  background: var(--rosa-esc);
+}
+
+/* Card semi-transparente flutuante no rodapé da imagem */
+.visual-card {
+  position: absolute;
+  right: 1.3rem;
+  bottom: 1.3rem;
+  left: 1.3rem;
+  padding: 1.35rem 1.45rem 1.15rem;
+  color: var(--profundo);
+  background: rgba(252, 251, 248, .94);
+  border: 1px solid rgba(22, 36, 28, .12);
+  border-radius: 20px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: card-float 5.5s ease-in-out infinite;
+}
+
+.visual-card small {
+  display: block;
+  margin-bottom: .65rem;
+  font-size: .64rem;
+  letter-spacing: .08em;
+}
+
+.visual-card strong {
+  display: block;
+  font-size: clamp(1.35rem, 2vw, 2rem);
+  line-height: 1.08;
+  letter-spacing: -.04em;
+}
+
+.visual-card em {
+  color: var(--rosa-esc);
+}
+
+/* Pontos de status visual no card */
+.visual-dots {
+  display: flex;
+  gap: .42rem;
+  margin-top: 1rem;
+}
+
+.visual-dots i {
+  width: 16px;
+  height: 8px;
+  border-radius: 999px;
+  background: #d8ddd8;
+}
+
+.visual-dots i:nth-last-child(-n+3) {
+  background: var(--rosa);
+}
+
+/* Etiqueta sobreposta ao canto inferior direito do cartão branco. */
+.float-note {
+  position: absolute;
+  left: auto;
+  right: -1rem;
+  top: auto;
+  bottom: -1.5rem;
+  z-index: 3;
+  background: var(--rosa);
+  color: var(--profundo);
+  padding: 1.2rem 1.5rem;
+  min-width: 180px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(22, 36, 28, .14);
+  animation: note-float 4.8s ease-in-out infinite .7s;
+}
+
+.float-note b,
+.float-note span {
+  display: block;
+}
+
+.float-note span {
+  font-size: .8rem;
+}
+
+/* Anéis cinéticos decorativos ao redor da composição visual */
+.kinetic-ring {
+  position: absolute;
+  z-index: -1;
+  display: block;
+  border: 1px solid rgba(239, 174, 191, .34);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ring-one {
+  width: 220px;
+  height: 220px;
+  right: -65px;
+  top: -80px;
+  animation: ring-drift 11s ease-in-out infinite alternate;
+}
+
+.ring-two {
+  width: 70px;
+  height: 70px;
+  left: -25px;
+  bottom: 12%;
+  border-color: rgba(142, 184, 152, .42);
+  animation: ring-drift 8s ease-in-out infinite alternate-reverse;
+}
+
+/* Órbita com pequeno ponto rosa */
+.orbit {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  border: 1px solid var(--salvia);
+  border-radius: 50%;
+  right: -34px;
+  top: -34px;
+}
+
+.orbit:after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: var(--rosa);
+  border-radius: 50%;
+  position: absolute;
+  right: 8px;
+  top: 12px;
+}
+
+/* Faixa de rodapé discreta na base do Hero */
+.hero-footer {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, .15);
+  padding-top: 1.5rem;
+  color: var(--salvia);
+  font-size: .7rem;
+  letter-spacing: .08em;
+}
+
+/* ==========================================================================
+   ==========================================================================
+   07. FAIXA LETREIRO ANIMADA (.brand-marquee)
+   Faixa rosa contínua em movimento que exibe as áreas de atuação da NOMAN.
+   ==========================================================================
+   ========================================================================== */
+
+.brand-marquee {
+  overflow: hidden;
+  color: var(--profundo);
+  background: var(--rosa);
+  border-top: 1px solid rgba(22, 36, 28, .15);
+  border-bottom: 1px solid rgba(22, 36, 28, .15);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  padding: 1rem 0;
+  animation: marquee 14s linear infinite;
+}
+
+.marquee-group {
+  display: flex;
+  flex-shrink: 0;
+  min-width: 100vw;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1.5rem;
+  padding-right: 1.5rem;
+  white-space: nowrap;
+}
+
+.marquee-track span {
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .18em;
+}
+
+.marquee-track i {
+  color: white;
+  font-size: .85rem;
+  font-style: normal;
+}
+
+
+/* ==========================================================================
+   ==========================================================================
+   08. SEÇÃO SOBRE A NOMAN (#sobre, .about)
+   Apresentação da agência com layout editorial sofisticado em duas colunas.
+   ==========================================================================
+   ========================================================================== */
+
+.section-index {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--borda);
+  padding-bottom: 1.5rem;
+}
+
+.section-index span {
+  color: var(--rosa-esc);
+  font-weight: 700;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1.45fr .7fr;
+  gap: 7rem;
+  padding-top: 4rem;
+}
+
+.about-grid h2 {
+  font-size: clamp(2.7rem, 4.5vw, 5rem);
+}
+
+.about-copy {
+  font-size: 1.05rem;
+  color: var(--suave);
+}
+
+.about-copy p + p {
+  margin-top: 1.5rem;
+}
+
+
+/* ==========================================================================
+   ==========================================================================
+   09. SEÇÃO SERVIÇOS (#servicos, .services)
+   Grade com fundo claro destacando as 6 principais soluções oferecidas.
+   ==========================================================================
+   ========================================================================== */
+
+.services {
+  background: var(--claro);
+  max-width: none;
+  width: 100%;
+  padding-left: max(3rem, calc((100vw - var(--max)) / 2 + 3rem));
+  padding-right: max(3rem, calc((100vw - var(--max)) / 2 + 3rem));
+}
+
+.section-heading {
+  display: grid;
+  grid-template-columns: 1.5fr .55fr;
+  gap: 6rem;
+  align-items: end;
+  margin-bottom: 5rem;
+}
+
+.section-heading > p {
+  color: var(--suave);
+}
+
+/* Grade de 3 colunas para listar os 6 serviços */
+.service-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--borda);
+}
+
+/* Card individual de serviço */
+.service {
+  padding: 2.5rem 2rem 3rem 0;
+  border-bottom: 1px solid var(--borda);
+  min-height: 280px;
+  position: relative;
+  transition: background .3s ease, transform .3s ease, padding .3s ease;
+}
+
+.service:nth-child(3n+2),
+.service:nth-child(3n+3) {
+  padding-left: 2rem;
+  border-left: 1px solid var(--borda);
+}
+
+.service:hover {
+  background: #fff;
+  padding-right: 2rem;
+  transform: translateY(-5px);
+}
+
+.number {
+  font-size: .7rem;
+  color: var(--rosa-esc);
+  font-weight: 700;
+}
+
+.icon {
+  font-size: 1.8rem;
+  color: var(--salvia-esc);
+  position: absolute;
+  right: 2rem;
+  top: 2rem;
+}
+
+.service h3 {
+  font-size: 1.35rem;
+  margin-top: 3.3rem;
+}
+
+.service p {
+  color: var(--suave);
+  max-width: 340px;
+}
+
+/* Ícone circular rosa que aparece ao passar o cursor no serviço */
+.service::after {
+  content: "↗";
+  position: absolute;
+  right: 1.8rem;
+  bottom: 1.6rem;
+  width: 35px;
+  height: 35px;
+  display: grid;
+  place-items: center;
+  color: var(--profundo);
+  background: var(--rosa);
+  border-radius: 50%;
+  opacity: 0;
+  transform: translateY(8px) rotate(-25deg);
+  transition: .3s ease;
+}
+
+.service:hover::after {
+  opacity: 1;
+  transform: none;
+}
+
+
+/* ==========================================================================
+   ==========================================================================
+   10. SEÇÃO MANIFESTO / VISÃO (.statement)
+   Bloco em verde profundo com alto contraste e frase de posicionamento de marca.
+   ==========================================================================
+   ========================================================================== */
+
+.statement {
+  position: relative;
+  overflow: hidden;
+  background: var(--profundo);
+  color: white;
+  padding: 9rem max(3rem, calc((100vw - var(--max)) / 2 + 3rem));
+  min-height: 700px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.statement .eyebrow {
+  color: var(--salvia);
+}
+
+.statement h2 {
+  max-width: 1150px;
+}
+
+.statement h2 em {
+  color: var(--rosa);
+}
+
+/* Marca d'água monumental "N°" com opacidade sutil */
+.statement-mark {
+  position: absolute;
+  right: -2rem;
+  top: -8rem;
+  font-size: 32rem;
+  line-height: 1;
+  color: rgba(142, 184, 152, .06);
+  font-weight: 800;
+  pointer-events: none;
+}
+
+.statement-lines {
+  display: flex;
+  gap: 3rem;
+  border-top: 1px solid rgba(255, 255, 255, .18);
+  padding-top: 1.5rem;
+}
+
+.statement-lines span {
+  flex: 1;
+  color: #cad7ce;
+}
+
+
+/* ==========================================================================
+   ==========================================================================
+   11. SEÇÃO PROCESSO (#processo, .process, .timeline)
+   Linha do tempo horizontal demonstrando as 5 etapas de trabalho.
+   ==========================================================================
+   ========================================================================== */
+
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.step {
+  padding-right: 2rem;
+}
+
+.step b {
+  color: var(--rosa-esc);
+  font-size: .75rem;
+}
+
+.step > span {
+  display: block;
+  height: 1px;
+  background: var(--salvia);
+  margin: 1rem 0 2rem;
+  position: relative;
+}
+
+.step > span:before {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--verde);
+  top: -4px;
+}
+
+/* Ponto rosa pulsante na etapa */
+.step > span::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--rosa);
+  box-shadow: 0 0 0 0 rgba(239, 174, 191, .5);
+  animation: process-pulse 2.8s ease-out infinite;
+}
+
+.step h3 {
+  font-size: 1.3rem;
+}
+
+.step p {
+  color: var(--suave);
+  font-size: .92rem;
+}
+
+
+/* ==========================================================================
+   ==========================================================================
+   12. SEÇÃO VITRINE CONCEITUAL (.showcase)
+   Exibição artística de composições visuais em fundo verde institucional.
+   ==========================================================================
+   ========================================================================== */
+
+.showcase {
+  background: var(--verde);
+  color: #fff;
+  max-width: none;
+  width: 100%;
+  padding-left: max(3rem, calc((100vw - var(--max)) / 2 + 3rem));
+  padding-right: max(3rem, calc((100vw - var(--max)) / 2 + 3rem));
+}
+
+.showcase-intro {
+  max-width: 840px;
+}
+
+.showcase-intro .eyebrow {
+  color: var(--salvia);
+}
+
+.showcase-intro > p:last-child {
+  color: #c7d2ca;
+}
+
+.showcase-grid {
+  display: grid;
+  grid-template-columns: 1.4fr .6fr .75fr;
+  gap: 1.2rem;
+  margin-top: 4rem;
+  align-items: stretch;
+}
+
+.show-main {
+  margin: 0;
+  background: white;
+  color: var(--profundo);
+  overflow: hidden;
+}
+
+.show-main img {
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  transition: transform 1s cubic-bezier(.2, .8, .2, 1);
+}
+
+.show-main:hover img {
+  transform: scale(1.045);
+}
+
+.show-main figcaption {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+
+/* Letras do logo em pé, empilhadas e com suas cores originais. */
+.show-type {
+  background: #873f59;
+  color: var(--areia);
+  min-height: 470px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  container-type: size;
+}
+
+.show-type-logo {
+  position: absolute;
+  top: 20px;
+  width: 80%;
+  height: calc(100% - 65px);
+  overflow: visible;
+}
+
+.show-type small {
+  position: absolute;
+  bottom: 1rem;
+  font-size: .6rem;
+}
+
+/* Poster tipográfico com frase visual */
+.show-poster {
+  background: var(--areia);
+  color: var(--verde);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.show-poster > span {
+  font-size: .7rem;
+  letter-spacing: .2em;
+}
+
+.show-poster strong {
+  font-size: 4.4rem;
+  line-height: .78;
+  letter-spacing: -.08em;
+}
+
+.show-poster small {
+  border-top: 1px solid var(--borda);
+  padding-top: 1rem;
+}
+
+
+/* ==========================================================================
+   ==========================================================================
+   13. SEÇÃO DIFERENCIAIS (#why, .why)
+   Três pilares fundamentais da metodologia e relacionamento da NOMAN.
+   ==========================================================================
+   ========================================================================== */
+
+.why h2 {
+  max-width: 900px;
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 5rem;
+  border-top: 1px solid var(--borda);
+}
+
+.why-grid article {
+  padding: 3rem 3rem 0 0;
+}
+
+.why-grid article + article {
+  border-left: 1px solid var(--borda);
+  padding-left: 3rem;
+}
+
+.why-grid span {
+  font-size: 2rem;
+  color: var(--rosa-esc);
+}
+
+.why-grid h3 {
+  font-size: 1.3rem;
+  margin-top: 2rem;
+}
+
+.why-grid p {
+  color: var(--suave);
+}
+
+
+/* ==========================================================================
+   ==========================================================================
+   14. SEÇÃO CHAMADA PARA AÇÃO (.cta)
+   Banner rosa de conversão convidando o visitante para iniciar uma conversa.
+   ==========================================================================
+   ========================================================================== */
+
+.cta {
+  background: var(--rosa);
+  padding: 8rem max(3rem, calc((100vw - var(--max)) / 2 + 3rem));
+  text-align: center;
+}
+
+.cta .eyebrow {
+  color: var(--verde);
+}
+
+.cta h2 em {
+  color: white;
+}
+
+.cta > p:not(.eyebrow) {
+  max-width: 580px;
+  margin: 0 auto 2rem;
+}
+
+.cta .button {
+  border-radius: 999px;
+}
+
+
+/* ==========================================================================
+   ==========================================================================
+   15. SEÇÃO CONTATO & FORMULÁRIO (#contato, .contact)
+   Duas colunas: links rápidos à esquerda e formulário de envio por e-mail à direita.
+   ==========================================================================
+   ========================================================================== */
+
+.contact {
+  display: grid;
+  grid-template-columns: .85fr 1.15fr;
+  gap: 8rem;
+}
+
+.contact-info > p:not(.eyebrow) {
+  color: var(--suave);
+  max-width: 480px;
+}
+
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  margin-top: 3rem;
+}
+
+.contact-links a {
+  border-bottom: 1px solid var(--borda);
+  padding: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  transition: padding-left .2s ease;
+}
+
+.contact-links a:hover {
+  padding-left: .5rem;
+}
+
+/* Card do formulário com cantos arredondados modernos */
+.contact-form {
+  background: var(--claro);
+  padding: 3rem;
+  border: 1px solid var(--borda);
+  border-radius: 24px;
+}
+
+label {
+  font-size: .78rem;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 1.3rem;
+}
+
+/* Campos de entrada sem bordas laterais, apenas linha na base */
+input,
+textarea {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--borda);
+  background: transparent;
+  padding: .8rem 0;
+  font: 500 1rem 'Manrope', sans-serif;
+  color: var(--texto);
+  outline: none;
+  border-radius: 0;
+  transition: border-color .2s ease;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--salvia-esc);
+}
+
+textarea {
+  resize: vertical;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.form-note {
+  font-size: .7rem;
+  color: var(--suave);
+  margin-top: 1rem;
+}
+
+
+/* ==========================================================================
+   ==========================================================================
+   16. RODAPÉ INSTITUCIONAL (footer)
+   Final da página com logotipo oficial, links rápidos e direitos autorais.
+   ==========================================================================
+   ========================================================================== */
+
+.site-footer {
+  background: radial-gradient(ellipse at top left, #2b4334, transparent 65%), var(--profundo);
+  color: var(--areia);
+  padding: 3.5rem max(3rem, calc((100% - var(--max)) / 2 + 3rem)) 1.25rem;
+  border-top: 1px solid #46604c;
+}
+.footer-main { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, .7fr) minmax(0, 1fr); align-items: start; gap: clamp(2rem, 5vw, 5rem); padding-bottom: 2.75rem; }
+.footer-main > * { min-width: 0; }
+.footer-brand > a { display: inline-block; }
+.footer-brand img { width: 156px; height: auto; }
+.footer-brand p { font-size: clamp(1.35rem, 1.8vw, 1.65rem); line-height: 1.4; margin: 1rem 0 .75rem; letter-spacing: -.035em; }
+.footer-brand em { color: var(--salvia); }
+.footer-signature { display: block; max-width: 28ch; font-size: .75rem; line-height: 1.8; color: #b7c7bc; }
+.site-footer h3 { margin: 0 0 1rem; font-size: .7rem; line-height: 1.6; text-transform: uppercase; letter-spacing: .13em; color: #b7c7bc; }
+.footer-links { display: grid; grid-template-columns: 1fr; }
+.footer-links a, .footer-social, .footer-cta { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 44px; font-size: .85rem; transition: color .2s, background .2s, transform .2s; }
+.footer-links a { max-width: 160px; }
+.footer-links a span, .footer-social span { color: #b9e4a5; }
+.footer-links a:hover, .footer-social:hover { color: #b9e4a5; }
+.footer-contact { display: flex; flex-direction: column; align-items: stretch; }
+.footer-cta { padding: .8rem 1.25rem; background: #b9e4a5; color: var(--profundo); font-weight: 800; border-radius: 999px; }
+.footer-cta:hover { background: #c9f0b8; transform: translateY(-2px); }
+.footer-email { display: inline-flex; align-items: center; min-height: 44px; font-size: .85rem; margin: .65rem 0 0; overflow-wrap: anywhere; }
+.footer-email:hover { text-decoration: underline; }
+.footer-social { align-self: flex-start; }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid #405246; color: #b7c7bc; }
+.footer-bottom small, .footer-bottom a { font-size: .7rem; }
+.footer-bottom a { display: inline-flex; align-items: center; gap: .8rem; min-height: 44px; }
+.site-footer a:focus-visible, .nav-floating-btn:focus-visible, .site-header a:focus-visible, .menu:focus-visible { outline: 2px solid #b9e4a5; outline-offset: 5px; }
+
+/* ==========================================================================
+   ==========================================================================
+   17. ANIMAÇÕES & EFEITOS CHAVE (@keyframes)
+   Declarações de animações contínuas, flutuações e pulsações do site.
+   ==========================================================================
+   ========================================================================== */
+
+/* Animação do letreiro da faixa rosa (desloca 50% para reiniciar o loop) */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Respiração sutil da imagem no Hero */
+@keyframes hero-breathe {
+  from {
+    transform: scale(1.035);
+  }
+  to {
+    transform: scale(1.085);
+  }
+}
+
+/* Flutuação suave vertical do card de imagem */
+@keyframes card-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Flutuação e leve rotação da nota adesiva rosa */
+@keyframes note-float {
+  0%, 100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-9px) rotate(1deg);
+  }
+}
+
+/* Movimento de deriva dos anéis cinéticos */
+@keyframes ring-drift {
+  to {
+    transform: translate3d(-24px, 20px, 0) scale(1.12);
+  }
+}
+
+/* Pulsação do texto na vitrine */
+@keyframes type-pulse {
+  0%, 100% {
+    transform: rotate(-2deg) scale(1);
+  }
+  50% {
+    transform: rotate(2deg) scale(1.05);
+  }
+}
+
+/* Pulso em expansão nos pontos da timeline */
+@keyframes process-pulse {
+  70% {
+    box-shadow: 0 0 0 10px rgba(239, 174, 191, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 174, 191, 0);
+  }
+}
+
+
+/* ==========================================================================
+   ==========================================================================
+   18. RESPONSIVIDADE & MEDIA QUERIES
+   Ajustes de layout para tablets (até 900px), celulares (até 560px)
+   e modo de acessibilidade (movimento reduzido).
+   ==========================================================================
+   ========================================================================== */
+
+/* TABLETS E TELAS MÉDIAS (Até 900px de largura) */
+@media (max-width: 900px) {
+  /* Cabeçalho mobile adaptado */
+  .site-header {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    height: 64px;
+    padding: 0 1.2rem;
+  }
+
+  .logo-link img {
+    width: 120px;
+  }
+
+  /* Oculta o menu e botão no topo e ativa o botão de hambúrguer */
+  .site-header nav,
+  .site-header > .button {
+    display: none;
+  }
+
+  .menu {
+    display: block;
+  }
+
+  /* Menu aberto no mobile ao clicar em Menu */
+  .site-header.open nav {
+    display: flex;
+    position: absolute;
+    top: 66px;
+    left: 0;
+    right: 0;
+    background: var(--profundo);
+    padding: 2rem;
+    flex-direction: column;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, .13);
+  }
+
+  .section {
+    padding: 6rem 1.3rem;
+  }
+
+  /* Hero passa de 2 colunas para 1 coluna vertical */
+  .hero {
+    grid-template-columns: 1fr;
+    padding-top: 8rem;
+    padding-left: 1.3rem;
+    padding-right: 1.3rem;
+    gap: 3rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.8rem, 7.5vw, 3.4rem);
+  }
+
+  .hero h1 em {
+    white-space: normal;
+  }
+
+  .hero-footer {
+    display: none;
+  }
+
+  .hero-visual {
+    margin-left: 0;
+  }
+
+  .image-frame {
+    aspect-ratio: 4/3;
+    transform: none !important;
+  }
+
+  .float-note {
+    left: auto;
+    right: -.5rem;
+  }
+
+  .hero-pillars {
+    margin-top: 3rem;
+  }
+
+  /* Grids de conteúdo passam para 1 coluna */
+  .about-grid,
+  .section-heading,
+  .contact {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .service-list {
+    grid-template-columns: 1fr;
+  }
+
+  .service:nth-child(n) {
+    border-left: 0;
+    padding: 2rem 0;
+  }
+
+  .statement {
+    padding: 7rem 1.3rem;
+    min-height: 620px;
+  }
+
+  .statement-lines {
+    flex-direction: column;
+    gap: .8rem;
+  }
+
+  .timeline {
+    grid-template-columns: 1fr;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 45px 1fr;
+    column-gap: 1rem;
+    padding: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .step b {
+    grid-row: 1 / 4;
+  }
+
+  .step > span {
+    display: none;
+  }
+
+  .step h3 {
+    margin-bottom: .4rem;
+  }
+
+  .showcase {
+    padding-left: 1.3rem;
+    padding-right: 1.3rem;
+  }
+
+  .showcase-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .show-main {
+    grid-column: 1 / -1;
+  }
+
+  .show-type,
+  .show-poster {
+    min-height: 340px;
+  }
+
+  .why-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .why-grid article + article {
+    border-left: 0;
+    border-top: 1px solid var(--borda);
+    padding-left: 0;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .site-footer { padding: 3rem 1.3rem 1rem; }
+  .footer-main { grid-template-columns: 1fr 1fr; gap: 2rem 3rem; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+
+/* SMARTPHONES PEQUENOS (Até 560px de largura) */
+@media (max-width: 560px) {
+  h1 {
+    font-size: 3rem;
+  }
+
+  .actions {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: .8rem;
+  }
+
+  .hero-pillars {
+    grid-template-columns: 1fr;
+    gap: .9rem;
+  }
+
+  .hero-pillars div {
+    padding-bottom: .8rem;
+    border-bottom: 1px solid rgba(255, 255, 255, .12);
+  }
+
+  .visual-card {
+    right: .7rem;
+    bottom: .7rem;
+    left: .7rem;
+    padding: 1rem;
+  }
+
+  .float-note {
+    display: none;
+  }
+
+  .hero-visual {
+    margin-bottom: 0;
+  }
+
+  .showcase-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .show-main {
+    grid-column: auto;
+  }
+
+  .about-grid h2,
+  h2 {
+    font-size: 2.8rem;
+  }
+
+  .contact-form {
+    padding: 1.5rem;
+  }
+
+  .show-type {
+    min-height: 300px;
+  }
+
+  .footer-main { grid-template-columns: 1fr; gap: 2rem; padding-bottom: 2rem; }
+  .footer-links { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2rem; }
+  .footer-links a { max-width: none; }
+  .footer-contact { padding-top: 1.75rem; border-top: 1px solid #405246; }
+  .footer-cta { align-self: flex-start; width: 100%; max-width: 320px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; gap: .25rem; padding-top: 1.25rem; }
+
+  .orbit {
+    display: none;
+  }
+}
+
+/* ACESSIBILIDADE: Para usuários que configuraram preferência de movimento reduzido no sistema operacional */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .image-frame {
+    transform: none !important;
+  }
+}
+
+/* Navega??o recolhida: o c?rculo abre a ilha sob demanda. */
+.site-header { transition: opacity .25s ease, transform .25s ease, visibility .25s; }
+.page-scrolled .site-header { opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(-16px) scale(.97); }
+.page-scrolled .site-header.island-open { opacity: 1; visibility: visible; pointer-events: auto; transform: none; top: 82px; }
+.nav-floating-btn { position: fixed; z-index: 21; top: 16px; right: max(1.25rem, calc((100vw - var(--max)) / 2 + 1.5rem)); width: 50px; height: 50px; display: grid; place-items: center; padding: 0; border-radius: 50%; border: 1px solid #64816b; background: var(--profundo); color: #b9e4a5; box-shadow: 0 6px 24px #16241c30; cursor: pointer; opacity: 0; visibility: hidden; transform: translateY(-12px); transition: opacity .25s, visibility .25s, transform .25s, background .25s; }
+.page-scrolled .nav-floating-btn { opacity: 1; visibility: visible; transform: none; }
+.nav-floating-btn:hover { background: #314b39; }
+.nav-btn-arrow { transition: transform .25s; }
+.nav-floating-btn.active .nav-btn-arrow { transform: rotate(180deg); }
+@media (max-width: 900px) {
+  .nav-floating-btn { top: 10px; right: 10px; }
+  .page-scrolled .site-header.island-open { top: 70px; height: auto; max-height: calc(100dvh - 90px); overflow-y: auto; padding: 1.3rem; border-radius: 24px; flex-wrap: wrap; gap: 1.2rem; }
+  .page-scrolled .site-header.island-open nav { display: flex; position: static; order: 3; flex-basis: 100%; flex-direction: column; gap: .25rem; padding: 0; border: 0; background: none; }
+  .page-scrolled .site-header.island-open nav a { padding: .75rem; border-radius: 10px; }
+  .page-scrolled .site-header.island-open nav a:hover { background: #314b39; }
+  .page-scrolled .site-header.island-open .menu { display: none; }
+}
