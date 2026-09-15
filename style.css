@@ -1667,7 +1667,7 @@ textarea {
   }
 }
 
-/* Navega??o recolhida: o c?rculo abre a ilha sob demanda. */
+/* Navegação recolhida: o círculo abre a ilha sob demanda. */
 .site-header { transition: opacity .25s ease, transform .25s ease, visibility .25s; }
 .page-scrolled .site-header { opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(-16px) scale(.97); }
 .page-scrolled .site-header.island-open { opacity: 1; visibility: visible; pointer-events: auto; transform: none; top: 82px; }
