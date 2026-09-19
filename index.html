@@ -15,6 +15,72 @@
 </head>
 
 <body>
+  <!-- TELA DE ABERTURA ANIMADA COM GSAP (INTRO SCREEN) -->
+  <div class="intro-screen" id="intro-screen">
+    <!-- Clarão e portal expansivo de luz rosa cinematográfica -->
+    <div class="intro-flash" id="intro-flash"></div>
+    <div class="intro-light-beam" id="intro-light-beam"></div>
+
+    <!-- Onda de choque expansiva de impacto -->
+    <div class="intro-shockwave" id="intro-shockwave"></div>
+
+    <div class="intro-stage" id="intro-stage">
+      <!-- Corda suspensa conectada ao M central -->
+      <div class="intro-rope-wrapper" id="intro-rope-wrapper">
+        <svg class="intro-rope-svg" viewBox="0 0 40 500" preserveAspectRatio="none">
+          <line x1="20" y1="0" x2="20" y2="500" stroke="url(#rope-grad)" stroke-width="2.5" stroke-linecap="round" />
+          <defs>
+            <linearGradient id="rope-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#8eb898" stop-opacity="0.3" />
+              <stop offset="70%" stop-color="#efaebf" />
+              <stop offset="100%" stop-color="#ffffff" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="intro-rope-knot"></div>
+      </div>
+
+      <!-- Container do Logo NOMAN com letras separadas -->
+      <div class="intro-logo" id="intro-logo">
+        <div class="intro-letter letter-n1" id="letter-n1">
+          <span class="letter-char">N</span>
+        </div>
+        <div class="intro-letter letter-o" id="letter-o">
+          <span class="letter-char">O</span>
+          <i class="letter-dot"></i>
+        </div>
+        <div class="intro-letter letter-m" id="letter-m">
+          <span class="letter-char">M</span>
+          <span class="m-anchor-ring"></span>
+        </div>
+        <div class="intro-letter letter-a" id="letter-a">
+          <span class="letter-char">A</span>
+        </div>
+        <div class="intro-letter letter-n2" id="letter-n2">
+          <span class="letter-char">N</span>
+        </div>
+      </div>
+
+      <!-- Subtítulo revelado no 1º impacto -->
+      <div class="intro-subtitle" id="intro-subtitle">
+        <span>COMUNICAÇÃO</span><i>✦</i><span>ESTRATÉGIA</span><i>✦</i><span>MARKETING</span>
+      </div>
+    </div>
+
+    <!-- Botão para pular abertura -->
+    <button class="intro-skip" id="intro-skip" aria-label="Pular introdução">Pular <span>ESC</span></button>
+  </div>
+
+  <!-- BARRA DE PROGRESSO DE ROLAGEM -->
+  <div class="scroll-progress-bar" id="scroll-progress" aria-hidden="true"></div>
+
+  <!-- CURSOR CUSTOMIZADO FLUIDO (Ativo em telas com mouse / pointer: fine) -->
+  <div class="custom-cursor" id="custom-cursor" aria-hidden="true">
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring">
+      <span class="cursor-label"></span>
+    </div>
+  </div>
   <!-- CABEÇALHO: logo, menu de navegação e botão de contato. -->
   <header class="site-header" id="top">
     <a class="logo-link" href="#inicio" aria-label="NOMAN, início"><img src="images/noman-logo.png" alt="NOMAN"></a>
@@ -83,7 +149,7 @@
       </div>
     </section>
 
-    <!-- SERVIÇOS: lista as principais soluções oferecidas. -->
+    <!-- SERVIÇOS: soluções da NOMAN apresentadas em cards durante a rolagem. -->
     <section class="services section" id="servicos">
       <div class="section-heading reveal">
         <div>
@@ -92,31 +158,43 @@
         </div>
         <p>Soluções de comunicação desenvolvidas para fortalecer marcas e aproximá-las do seu público.</p>
       </div>
-      <div class="service-list">
-        <article class="service reveal"><span class="number">01</span><span class="icon">◌</span>
-          <h3>Identidade Visual</h3>
-          <p>Desenvolvimento e evolução da identidade da sua marca, criando uma presença visual consistente e reconhecível.</p>
-        </article>
-        <article class="service reveal"><span class="number">02</span><span class="icon">▦</span>
-          <h3>Social Media</h3>
-          <p>Planejamento, criação e gestão de conteúdo para construir uma presença digital mais relevante.</p>
-        </article>
-        <article class="service reveal"><span class="number">03</span><span class="icon">◇</span>
-          <h3>Campanhas de Comunicação</h3>
-          <p>Conceitos criativos e campanhas para divulgar produtos, serviços, marcas e ideias.</p>
-        </article>
-        <article class="service reveal"><span class="number">04</span><span class="icon">✎</span>
-          <h3>Design Gráfico</h3>
-          <p>Materiais digitais e impressos alinhados à identidade e aos objetivos da marca.</p>
-        </article>
-        <article class="service reveal"><span class="number">05</span><span class="icon">◎</span>
-          <h3>Estratégia de Marca</h3>
-          <p>Posicionamento, mensagem e direcionamento estratégico para uma comunicação clara e consistente.</p>
-        </article>
-        <article class="service reveal"><span class="number">06</span><span class="icon">□</span>
-          <h3>Comunicação Digital</h3>
-          <p>Landing pages, peças digitais, apresentações e materiais para fortalecer sua presença online.</p>
-        </article>
+      <div class="services-scroll" aria-label="Serviços da NOMAN">
+        <div class="services-progress" aria-label="Navegação dos serviços">
+          <div class="service-labels">
+            <span>Identidade Visual</span>
+            <span>Social Media</span>
+            <span>Campanhas</span>
+            <span>Design Gráfico</span>
+            <span>Estratégia de Marca</span>
+            <span>Comunicação Digital</span>
+          </div>
+        </div>
+        <div class="services-cards">
+          <article class="service-card"><b>01</b><span>◌</span>
+            <h3>Identidade Visual</h3>
+            <p>Uma presença visual consistente, reconhecível e alinhada ao posicionamento da sua marca.</p>
+          </article>
+          <article class="service-card"><b>02</b><span>▦</span>
+            <h3>Social Media</h3>
+            <p>Planejamento, criação e gestão de conteúdo para construir presença e relacionamento.</p>
+          </article>
+          <article class="service-card"><b>03</b><span>◇</span>
+            <h3>Campanhas de Comunicação</h3>
+            <p>Conceitos criativos para divulgar produtos, serviços, marcas e ideias com impacto.</p>
+          </article>
+          <article class="service-card"><b>04</b><span>✎</span>
+            <h3>Design Gráfico</h3>
+            <p>Materiais digitais e impressos que traduzem a identidade e os objetivos da marca.</p>
+          </article>
+          <article class="service-card"><b>05</b><span>◎</span>
+            <h3>Estratégia de Marca</h3>
+            <p>Posicionamento, mensagem e direção para uma comunicação clara e consistente.</p>
+          </article>
+          <article class="service-card"><b>06</b><span>□</span>
+            <h3>Comunicação Digital</h3>
+            <p>Landing pages, peças e experiências digitais para fortalecer sua presença online.</p>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -137,27 +215,44 @@
         </div>
         <p>Um processo simples, colaborativo e estratégico — da escuta à evolução.</p>
       </div>
-      <div class="timeline">
-        <article class="step reveal"><b>01</b><span></span>
-          <h3>Briefing</h3>
-          <p>Conhecemos sua empresa, seu público, seus objetivos e o desafio de comunicação.</p>
-        </article>
-        <article class="step reveal"><b>02</b><span></span>
-          <h3>Diagnóstico</h3>
-          <p>Analisamos a comunicação atual da empresa para identificar oportunidades e pontos que podem ser melhorados.</p>
-        </article>
-        <article class="step reveal"><b>03</b><span></span>
-          <h3>Planejamento e Edição</h3>
-          <p>Transformamos tudo o que descobrimos em direção. Desenvolvemos os materiais que traduzem a essência da marca.</p>
-        </article>
-        <article class="step reveal"><b>04</b><span></span>
-          <h3>Aprovação e Implementação</h3>
-          <p>Apresentamos as propostas aos clientes, alinhamos os detalhes e colocamos em prática.</p>
-        </article>
-        <article class="step reveal"><b>05</b><span></span>
-          <h3>Análise e Otimização</h3>
-          <p>Acompanhamos os resultados, entendemos o que funciona e identificamos o que pode evoluir.</p>
-        </article>
+      <div class="gallery process-gallery">
+        <ul class="cards" aria-label="Etapas do processo da NOMAN">
+          <li>
+            <article class="process-card"><b>01</b><span class="process-card-line"></span>
+              <h3>Briefing</h3>
+              <p>Conhecemos sua empresa, seu público, seus objetivos e o desafio de comunicação.</p>
+            </article>
+          </li>
+          <li>
+            <article class="process-card"><b>02</b><span class="process-card-line"></span>
+              <h3>Diagnóstico</h3>
+              <p>Analisamos a comunicação atual para encontrar oportunidades e pontos de evolução.</p>
+            </article>
+          </li>
+          <li>
+            <article class="process-card"><b>03</b><span class="process-card-line"></span>
+              <h3>Planejamento e criação</h3>
+              <p>Transformamos descobertas em direção e desenvolvemos materiais com a essência da marca.</p>
+            </article>
+          </li>
+          <li>
+            <article class="process-card"><b>04</b><span class="process-card-line"></span>
+              <h3>Aprovação e implementação</h3>
+              <p>Apresentamos as propostas, alinhamos os detalhes e colocamos o plano em prática.</p>
+            </article>
+          </li>
+          <li>
+            <article class="process-card"><b>05</b><span class="process-card-line"></span>
+              <h3>Análise e otimização</h3>
+              <p>Acompanhamos os resultados e identificamos o que pode evoluir continuamente.</p>
+            </article>
+          </li>
+        </ul>
+        <div class="actions" aria-label="Controles das etapas">
+          <button class="prev" type="button" aria-label="Etapa anterior">Anterior</button>
+          <button class="next" type="button" aria-label="Próxima etapa">Próximo</button>
+        </div>
+        <div class="drag-proxy" aria-hidden="true"></div>
       </div>
     </section>
 
@@ -286,6 +381,10 @@
     </div>
   </footer>
   <!-- Carrega o JavaScript depois do conteúdo para não atrasar a exibição da página. -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/SplitText.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/Draggable.min.js"></script>
   <script src="script.js"></script>
 </body>
 
