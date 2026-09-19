@@ -435,10 +435,13 @@ if (contactForm) {
   });
 }
 
+// Seleciona a galeria do processo e seus controles de navegação.
 const processGallery = document.querySelector(".process-gallery");
 const processCards = processGallery ? Array.from(processGallery.querySelectorAll(".cards li")) : [];
 const nextProcessButton = processGallery?.querySelector(".next");
 const previousProcessButton = processGallery?.querySelector(".prev");
+
+// Guarda o estado atual da galeria, do autoplay e do gesto de arraste.
 let activeProcessCard = 0;
 let dragStartX = 0;
 let dragStartY = 0;
@@ -453,6 +456,7 @@ let dragPreviewIndex = 0;
 let processAutoplayTimer;
 
 function scheduleProcessAutoplay() {
+  // Reinicia o contador sempre que o visitante interage com a galeria.
   clearTimeout(processAutoplayTimer);
   processAutoplayTimer = setTimeout(() => {
     if (!isDraggingProcess) showProcessCard(activeProcessCard + 1);
@@ -461,6 +465,7 @@ function scheduleProcessAutoplay() {
 }
 
 function showProcessCard(index) {
+  // Mantém o índice dentro do ciclo e reposiciona todos os cards ao redor do ativo.
   if (!processCards.length) return;
   activeProcessCard = (index + processCards.length) % processCards.length;
 
@@ -470,6 +475,7 @@ function showProcessCard(index) {
     if (distance > half) distance -= processCards.length;
     if (distance < -half) distance += processCards.length;
 
+    // A distância define escala, opacidade, desfoque e ordem visual do card.
     const isActive = distance === 0;
     const distanceFromCenter = Math.abs(distance);
     gsap.to(card, {
@@ -490,6 +496,7 @@ function showProcessCard(index) {
 }
 
 nextProcessButton?.addEventListener("click", () => {
+  // Avança manualmente e reinicia o tempo do autoplay.
   showProcessCard(activeProcessCard + 1, 1);
   scheduleProcessAutoplay();
 });
@@ -499,6 +506,7 @@ previousProcessButton?.addEventListener("click", () => {
 });
 
 processGallery?.addEventListener("pointerdown", (event) => {
+  // Inicia o arraste somente quando o toque não começou em um botão.
   if (event.target.closest("button")) return;
 
   isDraggingProcess = true;
@@ -517,6 +525,7 @@ processGallery?.addEventListener("pointerdown", (event) => {
 });
 
 processGallery?.addEventListener("pointermove", (event) => {
+  // Atualiza a prévia do card enquanto o ponteiro se desloca horizontalmente.
   if (!isDraggingProcess) return;
 
   const now = performance.now();
@@ -524,6 +533,7 @@ processGallery?.addEventListener("pointermove", (event) => {
   const verticalDelta = event.clientY - dragStartY;
 
   if (!isHorizontalProcessDrag) {
+    // Aguarda um pequeno deslocamento para diferenciar arraste horizontal de rolagem vertical.
     if (Math.abs(delta) < 8 && Math.abs(verticalDelta) < 8) return;
     if (Math.abs(verticalDelta) > Math.abs(delta)) {
       isDraggingProcess = false;
@@ -542,6 +552,7 @@ processGallery?.addEventListener("pointermove", (event) => {
   dragLastTime = now;
 
   const cardWidth = processCards[0]?.offsetWidth || 1;
+  // Converte a distância do ponteiro em uma quantidade limitada de cards.
   const stepDistance = cardWidth * 0.42;
   const requestedSteps = Math.round(-delta / stepDistance);
   const boundedSteps = Math.max(-processCards.length + 1, Math.min(processCards.length - 1, requestedSteps));
@@ -557,6 +568,7 @@ processGallery?.addEventListener("pointermove", (event) => {
 });
 
 function finishProcessDrag(event) {
+  // Decide se o gesto deve confirmar o próximo card ou retornar ao card atual.
   if (!isDraggingProcess) return;
   isDraggingProcess = false;
   processGallery.classList.remove("is-dragging");
@@ -574,6 +586,7 @@ function finishProcessDrag(event) {
   const passedVelocity = Math.abs(dragVelocity) > 0.45;
 
   if (!passedDistance && !passedVelocity) {
+    // Movimentos curtos ou lentos são tratados como um toque sem troca de card.
     showProcessCard(activeProcessCard);
     return;
   }
@@ -593,22 +606,22 @@ window.addEventListener("pointercancel", finishProcessDrag);
 showProcessCard(0);
 scheduleProcessAutoplay();
 
-/* The original infinite ScrollTrigger gallery is kept below for reference but disabled. */
+/* A galeria original com ScrollTrigger fica abaixo apenas como referência e está desativada. */
 if (false) {
 gsap.registerPlugin(ScrollTrigger, Draggable);
 
-let iteration = 0; // gets iterated when we scroll all the way to the end or start and wraps around - allows us to smoothly continue the playhead scrubbing in the correct direction.
+let iteration = 0; // Incrementa ao chegar ao início ou ao fim para manter a animação contínua.
 
-// set initial state of items
+// Define o estado inicial dos itens.
 const processGallery = document.querySelector(".process-gallery");
 const processCards = processGallery ? processGallery.querySelectorAll(".cards li") : [];
 
 gsap.set(processCards, { xPercent: 400, opacity: 0, scale: 0 });
 
-const spacing = 0.1, // spacing of the cards (stagger)
-	snapTime = gsap.utils.snap(spacing), // we'll use this to snapTime the playhead on the seamlessLoop
+const spacing = 0.1, // Espaçamento entre os cards durante o escalonamento.
+  snapTime = gsap.utils.snap(spacing), // Ajusta o tempo da animação aos intervalos definidos.
   cards = gsap.utils.toArray(processCards),
-	// this function will get called for each element in the buildSeamlessLoop() function, and we just need to return an animation that'll get inserted into a master timeline, spaced
+  // Cria a animação de cada card para inseri-la na linha do tempo principal.
 	animateFunc = element => {
 		const tl = gsap.timeline();
 		tl.fromTo(element, {scale: 0, opacity: 0}, {scale: 1, opacity: 1, zIndex: 100, duration: 0.5, yoyo: true, repeat: 1, ease: "power1.in", immediateRender: false})
@@ -616,9 +629,9 @@ const spacing = 0.1, // spacing of the cards (stagger)
 		return tl;
 	},
 	seamlessLoop = buildSeamlessLoop(cards, spacing, animateFunc),
-	playhead = {offset: 0}, // a proxy object we use to simulate the playhead position, but it can go infinitely in either direction and we'll just use an onUpdate to convert it to the corresponding time on the seamlessLoop timeline.
-	wrapTime = gsap.utils.wrap(0, seamlessLoop.duration()), // feed in any offset (time) and it'll return the corresponding wrapped time (a safe value between 0 and the seamlessLoop's duration)
-	scrub = gsap.to(playhead, { // we reuse this tween to smoothly scrub the playhead on the seamlessLoop
+  playhead = {offset: 0}, // Objeto intermediário que representa a posição da animação.
+  wrapTime = gsap.utils.wrap(0, seamlessLoop.duration()), // Mantém qualquer posição dentro da duração da animação.
+  scrub = gsap.to(playhead, { // Reutiliza esta animação para mover a linha do tempo suavemente.
 		offset: 0,
     onUpdate() {
       seamlessLoop.time(wrapTime(playhead.offset));
@@ -638,11 +651,11 @@ const spacing = 0.1, // spacing of the cards (stagger)
     pin: processGallery,
     anticipatePin: 1
   }),
-	// converts a progress value (0-1, but could go outside those bounds when wrapping) into a "safe" scroll value that's at least 1 away from the start or end because we reserve those for sensing when the user scrolls ALL the way up or down, to wrap.
+  // Converte o progresso em uma posição de rolagem segura para detectar os limites.
   progressToScroll = progress => gsap.utils.clamp(0, trigger.end, progress * trigger.end);
 
-// feed in an offset (like a time on the seamlessLoop timeline, but it can exceed 0 and duration() in either direction; it'll wrap) and it'll set the scroll position accordingly. That'll call the onUpdate() on the trigger if there's a change.
-function scrollToOffset(offset) { // moves the scroll playhead to the place that corresponds to the totalTime value of the seamlessLoop, and wraps if necessary.
+// Recebe uma posição da linha do tempo e ajusta a rolagem correspondente.
+function scrollToOffset(offset) { // Move a animação e volta ao início quando necessário.
   const lastOffset = seamlessLoop.duration() - 0.001;
   const snappedTime = gsap.utils.clamp(0, lastOffset, snapTime(offset));
   const progress = snappedTime / seamlessLoop.duration();
@@ -657,7 +670,7 @@ nextProcessButton?.addEventListener("click", () => scrollToOffset(scrub.vars.off
 previousProcessButton?.addEventListener("click", () => scrollToOffset(scrub.vars.offset - spacing));
 
 
-// below is the dragging functionality (mobile-friendly too)...
+// Configura o arraste dos cards, inclusive em dispositivos móveis.
 Draggable.create(".process-gallery .drag-proxy", {
   type: "x",
   trigger: ".cards",
@@ -677,29 +690,29 @@ scrub.vars.offset = 0;
 scrub.invalidate().restart();
 
 function buildSeamlessLoop(items, spacing, animateFunc) {
-	let overlap = Math.ceil(1 / spacing), // number of EXTRA animations on either side of the start/end to accommodate the seamless looping
-		startTime = items.length * spacing + 0.5, // the time on the rawSequence at which we'll start the seamless loop
-		loopTime = (items.length + overlap) * spacing + 1, // the spot at the end where we loop back to the startTime
-		rawSequence = gsap.timeline({paused: true}), // this is where all the "real" animations live
-		seamlessLoop = gsap.timeline({ // this merely scrubs the playhead of the rawSequence so that it appears to seamlessly loop
+  let overlap = Math.ceil(1 / spacing), // Animações extras antes e depois garantem a continuidade do loop.
+    startTime = items.length * spacing + 0.5, // Momento da sequência original em que o loop começa.
+    loopTime = (items.length + overlap) * spacing + 1, // Ponto final que retorna ao momento inicial.
+    rawSequence = gsap.timeline({paused: true}), // Linha do tempo que contém todas as animações reais.
+    seamlessLoop = gsap.timeline({ // Linha do tempo que simula a repetição contínua.
 			paused: true,
-			repeat: -1, // to accommodate infinite scrolling/looping
-			onRepeat() { // works around a super rare edge case bug that's fixed GSAP 3.6.1
+      repeat: -1, // Permite repetir a animação indefinidamente.
+      onRepeat() { // Corrige um caso raro de repetição identificado no GSAP 3.6.1.
 				this._time === this._dur && (this._tTime += this._dur - 0.01);
 			}
 		}),
 		l = items.length + overlap * 2,
 		time, i, index;
 
-	// now loop through and create all the animations in a staggered fashion. Remember, we must create EXTRA animations at the end to accommodate the seamless looping.
+  // Cria as animações em sequência, incluindo itens extras para fechar o loop.
 	for (i = 0; i < l; i++) {
 		index = i % items.length;
 		time = i * spacing;
 		rawSequence.add(animateFunc(items[index]), time);
-		i <= items.length && seamlessLoop.add("label" + i, time); // we don't really need these, but if you wanted to jump to key spots using labels, here ya go.
+    i <= items.length && seamlessLoop.add("label" + i, time); // Marca pontos importantes para possíveis saltos na animação.
 	}
 
-	// here's where we set up the scrubbing of the playhead to make it appear seamless.
+  // Configura o movimento da linha do tempo para que o loop pareça contínuo.
 	rawSequence.time(startTime);
 	seamlessLoop.to(rawSequence, {
 		time: loopTime,
@@ -716,16 +729,23 @@ function buildSeamlessLoop(items, spacing, animateFunc) {
 }
 
 
-/* Services cards change as the user scrolls through the light services section. */
+/* Os cards de serviços mudam conforme o usuário navega pela seção clara. */
 const servicesSection = document.querySelector(".services");
 const serviceCards = servicesSection ? gsap.utils.toArray(".service-card", servicesSection) : [];
 const serviceLabels = servicesSection ? gsap.utils.toArray(".service-labels span", servicesSection) : [];
 const servicesCardsArea = servicesSection?.querySelector(".services-cards");
 let activeServiceIndex = 0;
 let serviceWheelLocked = false;
+let servicePointerStartX = 0;
+let servicePointerStartY = 0;
+let servicePointerMoved = false;
+let servicePointerActive = false;
+let serviceIgnoreClick = false;
 
+// Atualiza a posição, a escala e a transparência dos cards e dos rótulos.
 if (servicesSection && serviceCards.length) {
   const updateServiceStack = (activeIndex) => {
+    // Calcula a distância circular para conectar o primeiro e o último item.
 
     serviceCards.forEach((card, cardIndex) => {
       let distance = cardIndex - activeIndex;
@@ -747,6 +767,7 @@ if (servicesSection && serviceCards.length) {
     });
 
     serviceLabels.forEach((label, labelIndex) => {
+      // O rótulo ativo fica maior e nítido; os demais recuam visualmente.
       let distance = labelIndex - activeIndex;
       const half = serviceLabels.length / 2;
       if (distance > half) distance -= serviceLabels.length;
@@ -768,17 +789,95 @@ if (servicesSection && serviceCards.length) {
   };
 
   const changeServiceCard = (direction) => {
+    // Alterna o serviço e volta ao primeiro ao ultrapassar o último.
     activeServiceIndex = (activeServiceIndex + direction + serviceCards.length) % serviceCards.length;
     updateServiceStack(activeServiceIndex);
   };
 
+  // Permite escolher diretamente um card ou um rótulo com o clique do mouse.
+  const selectServiceCard = (target) => {
+    const targetIndex = serviceCards.indexOf(target);
+    if (targetIndex < 0) return;
+    if (targetIndex === activeServiceIndex) {
+      changeServiceCard(1);
+    } else {
+      activeServiceIndex = targetIndex;
+      updateServiceStack(activeServiceIndex);
+    }
+  };
+
+  servicesCardsArea?.addEventListener("pointerdown", (event) => {
+    // Guarda o início do gesto e captura o ponteiro para acompanhar o dedo até o fim.
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    servicePointerStartX = event.clientX;
+    servicePointerStartY = event.clientY;
+    servicePointerMoved = false;
+    servicePointerActive = true;
+    servicesCardsArea.classList.add("is-dragging-service");
+    servicesCardsArea.setPointerCapture?.(event.pointerId);
+  });
+
+  window.addEventListener("pointermove", (event) => {
+    // Considera apenas deslocamentos horizontais como navegação entre cards.
+    if (!servicePointerActive) return;
+    const horizontalDistance = event.clientX - servicePointerStartX;
+    const verticalDistance = event.clientY - servicePointerStartY;
+    if (Math.abs(horizontalDistance) > 12 && Math.abs(horizontalDistance) > Math.abs(verticalDistance)) {
+      servicePointerMoved = true;
+      event.preventDefault();
+    }
+  });
+
+  window.addEventListener("pointerup", (event) => {
+    if (!servicePointerActive) return;
+    const horizontalDistance = event.clientX - servicePointerStartX;
+    const verticalDistance = event.clientY - servicePointerStartY;
+    servicesCardsArea.releasePointerCapture?.(event.pointerId);
+    servicesCardsArea.classList.remove("is-dragging-service");
+    servicePointerActive = false;
+
+    if (servicePointerMoved && Math.abs(horizontalDistance) > Math.abs(verticalDistance)) {
+      // Arrastar para a esquerda avança; arrastar para a direita retorna ao card anterior.
+      changeServiceCard(horizontalDistance < 0 ? 1 : -1);
+      serviceIgnoreClick = true;
+      window.setTimeout(() => {
+        serviceIgnoreClick = false;
+      }, 400);
+    }
+    servicePointerMoved = false;
+  });
+
+  window.addEventListener("pointercancel", () => {
+    if (!servicePointerActive) return;
+    servicePointerActive = false;
+    servicePointerMoved = false;
+    servicesCardsArea.classList.remove("is-dragging-service");
+  });
+
+  servicesCardsArea?.addEventListener("click", (event) => {
+    // Não troca novamente quando o clique é consequência de um arraste no celular.
+    if (serviceIgnoreClick) return;
+    const clickedCard = event.target.closest(".service-card");
+    if (clickedCard) selectServiceCard(clickedCard);
+  });
+
+  serviceLabels.forEach((label, labelIndex) => {
+    label.addEventListener("click", () => {
+      // Os nomes laterais também funcionam como atalhos para cada serviço.
+      activeServiceIndex = labelIndex;
+      updateServiceStack(activeServiceIndex);
+    });
+  });
+
   servicesCardsArea?.addEventListener("wheel", (event) => {
+    // Usa a roda do mouse para trocar cards sem deixar a página avançar junto.
     if (!event.target.closest(".service-card")) return;
     event.preventDefault();
     if (serviceWheelLocked) return;
 
     serviceWheelLocked = true;
     changeServiceCard(event.deltaY > 0 ? 1 : -1);
+    // Evita várias trocas causadas por um único movimento contínuo da roda.
     window.setTimeout(() => {
       serviceWheelLocked = false;
     }, 350);

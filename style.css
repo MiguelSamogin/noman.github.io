@@ -1060,6 +1060,7 @@ body.landing-pending .hero-visual {
    ========================================================================== */
 
 .services {
+  /* Mantém a seção clara em toda a largura, alinhando o conteúdo ao restante do site. */
   background: var(--claro);
   max-width: none;
   width: 100%;
@@ -1069,12 +1070,14 @@ body.landing-pending .hero-visual {
 }
 
 .services-scroll {
+  /* Reserva espaço lateral para a coluna que identifica o serviço atual. */
   position: relative;
   min-height: 360px;
   padding-left: 16rem;
 }
 
 .services-progress {
+  /* Coluna fixa onde os nomes dos serviços acompanham a troca dos cards. */
   position: absolute;
   top: 0;
   bottom: 0;
@@ -1085,19 +1088,21 @@ body.landing-pending .hero-visual {
 }
 
 .service-labels {
+  /* Serve como referência para posicionar cada rótulo no centro da coluna. */
   position: relative;
   height: 100%;
   width: 100%;
 }
 
 .service-labels span {
+  /* Os rótulos se movem verticalmente quando o serviço ativo muda. */
   position: absolute;
   top: calc(50% - 1.2rem);
   left: 0;
   width: 100%;
   padding-right: 1.5rem;
   color: var(--suave);
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 800;
   line-height: 1.2;
   text-align: right;
@@ -1106,11 +1111,21 @@ body.landing-pending .hero-visual {
 }
 
 .services-cards {
+  /* Área empilhada que recebe o card ativo e os cards em segundo plano. */
   position: relative;
   min-height: 360px;
+  touch-action: pan-y;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Mostra que a área pode ser segurada e arrastada para trocar o serviço. */
+.services-cards.is-dragging-service {
+  cursor: grabbing;
 }
 
 .service-card {
+  /* Cada card ocupa a mesma área para criar a transição entre serviços. */
   position: absolute;
   inset: 0;
   height: 100%;
@@ -1131,16 +1146,19 @@ body.landing-pending .hero-visual {
 }
 
 .service-card:first-child {
+  /* Exibe o primeiro serviço antes da inicialização do JavaScript. */
   opacity: 1;
   visibility: visible;
   transform: none;
 }
 
 .service-labels span:first-child {
+  /* Indica visualmente o primeiro serviço enquanto a página ainda carrega. */
   color: var(--rosa-esc);
 }
 
 .service-card b {
+  /* Número sequencial exibido no topo de cada solução. */
   grid-column: 1 / -1;
   color: var(--rosa-esc);
   font-size: .75rem;
@@ -1148,12 +1166,14 @@ body.landing-pending .hero-visual {
 }
 
 .service-card > span {
+  /* Símbolo visual que acompanha o título da solução. */
   color: var(--rosa);
   font-size: 4rem;
   line-height: 1;
 }
 
 .service-card h3 {
+  /* Título principal do serviço atualmente apresentado. */
   align-self: center;
   margin: 0;
   max-width: 22rem;
@@ -1162,6 +1182,7 @@ body.landing-pending .hero-visual {
 }
 
 .service-card p {
+  /* Texto descritivo alinhado à base do card. */
   grid-column: 2;
   align-self: end;
   max-width: 35rem;
@@ -1170,6 +1191,7 @@ body.landing-pending .hero-visual {
 }
 
 .section-heading {
+  /* Organiza o título da seção e sua descrição em duas colunas. */
   display: grid;
   grid-template-columns: 1.5fr .55fr;
   gap: 6rem;
@@ -1179,6 +1201,11 @@ body.landing-pending .hero-visual {
 
 .section-heading > p {
   color: var(--suave);
+}
+
+/* Dá mais destaque ao nome da seção de serviços. */
+.services .section-heading .eyebrow {
+  font-size: 1rem;
 }
 
 /* Grade de 3 colunas para listar os 6 serviços */
