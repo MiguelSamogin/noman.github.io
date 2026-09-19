@@ -82,6 +82,7 @@ html {
 /* Configurações gerais do corpo da página */
 body {
   margin: 0;
+  overflow-x: hidden;
   background: var(--areia);
   color: var(--texto);
   font-family: 'Manrope', system-ui, -apple-system, sans-serif;
@@ -2056,17 +2057,23 @@ textarea {
     min-height: 320px;
   }
 
+  .services {
+    padding-left: 1.3rem;
+    padding-right: 1.3rem;
+  }
+
   .services-scroll {
-    padding-left: 8.5rem;
+    padding-left: 6.5rem;
   }
 
   .services-progress {
-    width: 7.5rem;
+    width: 6rem;
   }
 
   .service-card {
     grid-template-columns: auto 1fr;
-    padding: 1.8rem 1.4rem;
+    column-gap: .75rem;
+    padding: 1.5rem 1.1rem;
   }
 
   .service-card > span {
@@ -2163,6 +2170,44 @@ textarea {
 @media (max-width: 560px) {
   h1 {
     font-size: 3rem;
+  }
+
+  .services-scroll,
+  .services-cards {
+    min-height: 350px;
+  }
+
+  .services-scroll {
+    padding-left: 5.25rem;
+  }
+
+  .services-progress {
+    width: 4.75rem;
+  }
+
+  .service-labels span {
+    padding-right: .55rem;
+    font-size: .72rem;
+  }
+
+  .service-card {
+    grid-template-columns: 2rem minmax(0, 1fr);
+    column-gap: .55rem;
+    padding: 1.15rem .8rem;
+  }
+
+  .service-card > span {
+    font-size: 2.25rem;
+  }
+
+  .service-card h3 {
+    font-size: clamp(1.45rem, 7vw, 1.8rem);
+  }
+
+  .service-card p {
+    margin-top: 1.25rem;
+    font-size: .86rem;
+    line-height: 1.45;
   }
 
   .process-gallery .actions {
